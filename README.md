@@ -1,50 +1,96 @@
-# Welcome to your Expo app 👋
+# 📌 Mobile Postly - FIAP
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicativo móvel desenvolvido em **React Native** com **Expo** para o projeto Tech Challenge da FIAP.
+Este repositório contém o código-fonte do aplicativo mobile (Android, iOS e Web), integrando com a API para permitir que professores e alunos compartilhem conteúdos e interajam em tempo real.
 
-## Get started
+## 📄 Documentação
 
-1. Install dependencies
+Para informações adicionais, credenciais de autenticação e regras de negócio, consulte a documentação interna:
 
-   ```bash
-   npm install
-   ```
+🔗 [**Google Docs (Fiap Tech Challenge)**](https://docs.google.com/document/d/1z1TGVuseEpAEH6ZGFzFmyrys5lmMWnv5)
 
-2. Start the app
+## 🚀 Tecnologias
 
-   ```bash
-   npx expo start
-   ```
+-   [Expo](https://expo.dev/) -- Plataforma para desenvolvimento React Native
+-   [React Native](https://reactnative.dev/) -- Framework para apps nativos
+-   [Expo Router](https://docs.expo.dev/router/introduction/) -- Roteamento baseado em arquivos
+-   [TypeScript](https://www.typescriptlang.org/) -- Tipagem estática
+-   [Lucide React Native](https://lucide.dev/guide/packages/lucide-react-native) -- Ícones
+-   [AsyncStorage](https://react-native-async-storage.github.io/async-storage/) -- Armazenamento local
+-   [React Native Toast Message](https://github.com/calintamas/react-native-toast-message) -- Notificações Toast
 
-In the output, you'll find options to open the app in a
+## ✨ Funcionalidades
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+-   **Autenticação**: Login e Cadastro de usuários (Alunos e Professores).
+-   **Feed de Postagens**: Visualização de posts com paginação e atualização automática ("pull to refresh").
+-   **Criação e Edição**: Professores podem criar, editar e excluir suas postagens.
+-   **Perfil**: Visualização de dados do usuário e logout.
+-   **Interface Adaptável**: Suporte a temas claro/escuro e responsividade para Web e Mobile.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 📦 Instalação e uso
 
-## Get a fresh project
-
-When you're ready, run:
+Clone o repositório:
 
 ```bash
-npm run reset-project
+git clone https://github.com/kainanguerra/mobile-postly.git
+cd mobile-postly
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Instale as dependências:
 
-## Learn more
+```bash
+npm install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+Rodar a aplicação:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+# Iniciar o projeto (menu interativo para Android, iOS ou Web)
+npm start
 
-## Join the community
+# Ou rodar especificamente para uma plataforma:
+npm run android
+npm run ios
+npm run web
+```
 
-Join our community of developers creating universal apps.
+## ⚙️ Scripts disponíveis
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+-   `npm start` → inicia o servidor de desenvolvimento do Expo
+-   `npm run android` → roda no emulador Android ou dispositivo conectado
+-   `npm run ios` → roda no simulador iOS (macOS necessário)
+-   `npm run web` → roda a versão web no navegador
+-   `npm run lint` → roda o linter para verificar erros de código
+-   `npm run reset-project` → reseta o cache do projeto (útil se houver problemas de build)
+
+## 📂 Estrutura de pastas
+
+```bash
+mobile-postly/
+├── app/             # Rotas e telas do aplicativo (Expo Router)
+│   ├── (auth)/      # Rotas de autenticação (Login, Signup)
+│   ├── (home)/      # Rotas principais (Feed, Profile)
+│   ├── _layout.tsx  # Layout raiz e configurações de navegação
+│   └── ...
+├── assets/          # Imagens, fontes e ícones
+├── components/      # Componentes reutilizáveis (UI)
+│   └── ui/          # Componentes básicos (Button, Input)
+├── constants/       # Constantes globais (Cores, Fontes)
+├── lib/             # Funções utilitárias e serviços de API
+├── hooks/           # Custom Hooks
+├── package.json
+└── README.md
+```
+
+## 🤝 Contribuição
+
+1.  Faça um Fork deste repositório
+2.  Crie sua feature branch: `git checkout -b minha-feature`
+3.  Commit suas alterações: `git commit -m 'feat: Minha nova feature'`
+4.  Push para a branch: `git push origin minha-feature`
+5.  Abra um Pull Request
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT.
+Sinta-se livre para usar e modificar.
