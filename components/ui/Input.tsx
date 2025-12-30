@@ -1,6 +1,6 @@
 // components/ui/Input.tsx
 import React from 'react';
-import { TextInput, StyleSheet, TextInputProps, useColorScheme, View, StyleProp, ViewStyle, TextStyle, Text } from 'react-native';
+import { TextInput, StyleSheet, TextInputProps, useColorScheme, View, StyleProp, ViewStyle, TextStyle, Text, Platform } from 'react-native';
 import { Colors } from '@/constants/theme';
 
 interface InputProps extends Omit<TextInputProps, 'style'> {
@@ -33,6 +33,7 @@ export function Input({ rightIcon, style, inputStyle, error, ...props }: InputPr
       height: '100%',
       color: theme.text,
       fontSize: 16,
+      ...(Platform.OS === 'web' ? { outlineStyle: 'none' } : {}) as any,
     },
     iconContainer: {
       marginLeft: 8,
