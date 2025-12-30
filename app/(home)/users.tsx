@@ -22,42 +22,41 @@ function UserItem({ user, onDeleteSuccess }: { user: User, onDeleteSuccess: () =
     const theme = Colors[colorScheme];
     const router = useRouter();
 
-    const handleDelete = () => {
-        if (Platform.OS === 'web') {
-            if (window.confirm(`Are you sure you want to remove user ${user.name}?`)) {
-                removeUser(user.id).then(success => {
-                    if (success) {
-                        Toast.show({ type: 'success', text1: 'User removed' });
-                        onDeleteSuccess();
-                    } else {
-                        Toast.show({ type: 'error', text1: 'Failed to remove user' });
-                    }
-                });
-            }
-        } else {
-            Alert.alert(
-                "Remove User",
-                `Are you sure you want to remove user ${user.name}?`,
-                [
-                    { text: "Cancel", style: "cancel" },
-                    { 
-                        text: "Remove", 
-                        style: "destructive", 
-                        onPress: async () => {
-                            const success = await removeUser(user.id);
-                            if (success) {
-                                Toast.show({ type: 'success', text1: 'User removed' });
-                                onDeleteSuccess();
-                            } else {
-                                Toast.show({ type: 'error', text1: 'Failed to remove user' });
+        const handleDelete = () => {
+            if (Platform.OS === 'web') {
+                if (window.confirm(`Tem certeza que deseja remover o usuário ${user.name}?`)) {
+                    removeUser(user.id).then(success => {
+                        if (success) {
+                            Toast.show({ type: 'success', text1: 'Usuário removido' });
+                            onDeleteSuccess();
+                        } else {
+                            Toast.show({ type: 'error', text1: 'Falha ao remover usuário' });
+                        }
+                    });
+                }
+            } else {
+                Alert.alert(
+                    "Remover Usuário",
+                    `Tem certeza que deseja remover o usuário ${user.name}?`,
+                    [
+                        { text: "Cancelar", style: "cancel" },
+                        {
+                            text: "Remover",
+                            style: "destructive",
+                            onPress: async () => {
+                                const success = await removeUser(user.id);
+                                if (success) {
+                                    Toast.show({ type: 'success', text1: 'Usuário removido' });
+                                    onDeleteSuccess();
+                                } else {
+                                    Toast.show({ type: 'error', text1: 'Falha ao remover usuário' });
+                                }
                             }
                         }
-                    }
-                ]
-            );
-        }
-    };
-
+                    ]
+                );
+            }
+        };
     const handleEdit = () => {
         router.push({
             pathname: '/edit-user',
@@ -135,25 +134,24 @@ export default function UsersScreen() {
   };
 
   const roles = [
-      { label: 'All', value: '' },
-      { label: 'Student', value: 'STUDENT' },
-      { label: 'Professor', value: 'PROFESSOR' }
+      { label: 'Todos', value: '' },
+      { label: 'Alunos', value: 'STUDENT' },
+      { label: 'Professores', value: 'PROFESSOR' }
   ];
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.header}>
-        <Text style={[styles.title, { color: theme.primary }]}>Users</Text>
+        <Text style={[styles.title, { color: theme.primary }]}>Usuários</Text>
         <Button 
             title="Create New User" 
             onPress={() => router.push('/create-user')}
-            textStyle={{ fontSize: 14 }}
         />
       </View>
 
       <View style={styles.filtersContainer}>
           <Input 
-             placeholder="Search by email..." 
+             placeholder="Buscar por email..." 
              value={emailFilter} 
              onChangeText={setEmailFilter} 
              autoCapitalize="none"
@@ -191,7 +189,7 @@ export default function UsersScreen() {
           data={users}
           renderItem={({ item }) => (
             <UserItem 
-                user={item} 
+                user={item}
                 onDeleteSuccess={fetchUsers} 
             />
           )}

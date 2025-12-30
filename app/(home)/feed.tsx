@@ -19,32 +19,32 @@ function Post({ post, currentUser, onDeleteSuccess }: { post: PostType, currentU
 
     const handleDelete = () => {
         if (Platform.OS === 'web') {
-            if (window.confirm("Are you sure you want to delete this post?")) {
+            if (window.confirm("Tem certeza que deseja excluir esta postagem?")) {
                 deletePost(post.id).then(success => {
                     if (success) {
-                        Toast.show({ type: 'success', text1: 'Post deleted' });
+                        Toast.show({ type: 'success', text1: 'Postagem excluída' });
                         onDeleteSuccess();
                     } else {
-                        Toast.show({ type: 'error', text1: 'Failed to delete post' });
+                        Toast.show({ type: 'error', text1: 'Falha ao excluir postagem' });
                     }
                 });
             }
         } else {
             Alert.alert(
-                "Delete Post",
-                "Are you sure you want to delete this post?",
+                "Excluir Postagem",
+                "Tem certeza que deseja excluir esta postagem?",
                 [
-                    { text: "Cancel", style: "cancel" },
+                    { text: "Cancelar", style: "cancel" },
                     { 
-                        text: "Delete", 
+                        text: "Excluir", 
                         style: "destructive", 
                         onPress: async () => {
                             const success = await deletePost(post.id);
                             if (success) {
-                                Toast.show({ type: 'success', text1: 'Post deleted' });
+                                Toast.show({ type: 'success', text1: 'Postagem excluída' });
                                 onDeleteSuccess();
                             } else {
-                                Toast.show({ type: 'error', text1: 'Failed to delete post' });
+                                Toast.show({ type: 'error', text1: 'Falha ao excluir postagem' });
                             }
                         }
                     }
@@ -214,16 +214,16 @@ export default function FeedScreen() {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={['left', 'right', 'bottom']}>
       <View style={{ gap: 12, marginBottom: 16 }}>
           <Input 
-             placeholder="Search posts..." 
+             placeholder="Pesquisar postagens..." 
              value={search} 
              onChangeText={setSearch} 
              style={{ height: 44 }}
           />
           {currentUser?.role === 'PROFESSOR' && (
-             <Button title="Create Post" onPress={() => router.push('/create-post')} />
+             <Button title="Criar Postagem" onPress={() => router.push('/create-post')} />
           )}
       </View>
       
@@ -253,7 +253,7 @@ export default function FeedScreen() {
                   />
               ) : null
           }
-          ListEmptyComponent={!loading && <Text style={{ textAlign: 'center', color: theme.text, marginTop: 20 }}>No posts found.</Text>}
+          ListEmptyComponent={!loading && <Text style={{ textAlign: 'center', color: theme.text, marginTop: 20 }}>Nenhuma postagem encontrada.</Text>}
         />
       )}
     </SafeAreaView>

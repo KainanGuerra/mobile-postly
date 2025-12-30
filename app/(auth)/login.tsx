@@ -23,8 +23,8 @@ export default function LoginScreen() {
     if (!email || !password) {
       Toast.show({
         type: 'error',
-        text1: 'Missing fields',
-        text2: 'Please fill in all fields',
+        text1: 'Campos ausentes',
+        text2: 'Por favor, preencha todos os campos',
       });
       return;
     }
@@ -36,14 +36,14 @@ export default function LoginScreen() {
     if (result.success) {
       Toast.show({
         type: 'success',
-        text1: 'Welcome back!',
-        text2: 'Login successful.',
+        text1: 'Bem-vindo de volta!',
+        text2: 'Login realizado com sucesso.',
       });
       router.replace('/feed');
     } else {
       Toast.show({
         type: 'error',
-        text1: 'Login Failed',
+        text1: 'Falha no Login',
         text2: result.message,
       });
     }
@@ -63,16 +63,16 @@ export default function LoginScreen() {
       </View>
 
       <View style={styles.form}>
-        <Text style={[styles.title, { color: theme.primary }]}>Login</Text>
+        <Text style={[styles.title, { color: theme.primary }]}>Entrar</Text>
         <Input
-          placeholder="Email"
+          placeholder="E-mail"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
         />
         <Input
-          placeholder="Password"
+          placeholder="Senha"
           value={password}
           onChangeText={setPassword}
           secureTextEntry={!showPassword}
@@ -87,7 +87,7 @@ export default function LoginScreen() {
           }
         />
         <Button 
-            title={isLoading ? "Logging in..." : "Login"} 
+            title={isLoading ? "Entrando..." : "Entrar"} 
             onPress={handleLogin} 
             disabled={isLoading}
         />

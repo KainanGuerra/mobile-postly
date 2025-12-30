@@ -39,7 +39,7 @@ export default function HomeLayout() {
           backgroundColor: theme.primary,
         },
         headerTintColor: theme.white,
-        headerTitleAlign: 'left',
+                headerTitleAlign: 'left',
         headerTitle: () => (
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                 <Image 
@@ -64,14 +64,14 @@ export default function HomeLayout() {
       <Tabs.Screen
         name="feed"
         options={{
-          title: 'Feed',
+          title: 'Início',
           tabBarIcon: ({ color, size }) => <Ionicons name="home" color={color} size={size} />,
         }}
       />
       <Tabs.Screen
         name="users"
         options={{
-          title: 'Users',
+          title: 'Usuários',
           href: isProfessor ? undefined : null,
           tabBarIcon: ({ color, size }) => <Ionicons name="people" color={color} size={size} />,
         }}
@@ -79,7 +79,7 @@ export default function HomeLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
+          title: 'Perfil',
           tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
         }}
       />

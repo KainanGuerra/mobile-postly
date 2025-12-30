@@ -16,43 +16,51 @@ export default function RootLayout() {
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="(home)" options={{ headerShown: false }} />
-          <Stack.Screen 
-            name="edit-post" 
-            options={{ 
-              title: 'Edit Post',
-              headerStyle: { backgroundColor: theme.primary },
-              headerTintColor: theme.white,
-              headerBackTitleVisible: false,
-            }} 
-          />
-          <Stack.Screen 
-            name="create-post" 
-            options={{ 
-              title: 'Create Post',
-              headerStyle: { backgroundColor: theme.primary },
-              headerTintColor: theme.white,
-              headerBackTitleVisible: false,
-            }} 
-          />
-          <Stack.Screen 
-            name="edit-user" 
-            options={{ 
-              title: 'Edit User',
-              headerStyle: { backgroundColor: theme.primary },
-              headerTintColor: theme.white,
-              headerBackTitleVisible: false,
-            }} 
-          />
-          <Stack.Screen 
-            name="create-user" 
-            options={{ 
-              title: 'Create User',
-              headerStyle: { backgroundColor: theme.primary },
-              headerTintColor: theme.white,
-              headerBackTitleVisible: false,
-            }} 
-          />
-        </Stack>
+                    <Stack.Screen 
+                      name="edit-post" 
+                      options={{
+                        title: 'Editar Postagem',
+                        headerStyle: { backgroundColor: theme.primary },
+                        headerTintColor: theme.white,
+                        headerBackTitleVisible: false,
+                      }} 
+                    />
+                    <Stack.Screen 
+                      name="create-post" 
+                      options={{
+                        title: 'Criar Postagem',
+                        headerStyle: { backgroundColor: theme.primary },
+                        headerTintColor: theme.white,
+                        headerBackTitleVisible: false,
+                      }} 
+                    />
+                    <Stack.Screen 
+                      name="edit-user" 
+                      options={{
+                        title: 'Editar Usuário',
+                        headerStyle: { backgroundColor: theme.primary },
+                        headerTintColor: theme.white,
+                        headerBackTitleVisible: false,
+                      }} 
+                    />
+                    <Stack.Screen 
+                      name="create-user" 
+                      options={{
+                        title: 'Criar Usuário',
+                        headerStyle: { backgroundColor: theme.primary },
+                        headerTintColor: theme.white,
+                        headerBackTitleVisible: false,
+                      }} 
+                    />
+                    <Stack.Screen 
+                      name="change-password" 
+                      options={{
+                        title: 'Alterar Senha',
+                        headerStyle: { backgroundColor: theme.primary },
+                        headerTintColor: theme.white,
+                        headerBackTitleVisible: false,
+                      }} 
+                    />        </Stack>
         <Toast />
       </>
     </ThemeProvider>

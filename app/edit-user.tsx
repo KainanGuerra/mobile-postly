@@ -1,5 +1,5 @@
 // app/edit-user.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, useColorScheme, TouchableOpacity, Alert, Platform } from 'react-native';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -22,34 +22,44 @@ export default function EditUserScreen() {
   const [role, setRole] = useState(initialRole || 'STUDENT');
   const [showDropdown, setShowDropdown] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [nameError, setNameError] = useState('');
+
   const router = useRouter();
   const colorScheme = useColorScheme() ?? 'light';
   const theme = Colors[colorScheme];
 
-  const handleUpdate = async () => {
-    if (!name || !email) {
-      Toast.show({
-        type: 'error',
-        text1: 'Missing fields',
-        text2: 'Please fill in name and email',
-      });
-      return;
+  useEffect(() => {
+    if (name.length > 0) {
+      const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
+      if (!nameRegex.test(name)) {
+        setNameError('O nome deve conter apenas letras.');
+      } else {
+        setNameError('');
+      }
+    } else {
+      setNameError('');
     }
+  }, [name]);
+
+  const isFormValid = name && email && !nameError;
+
+  const handleUpdate = async () => {
+    if (!isFormValid) return;
 
     setIsLoading(true);
     try {
       await edit(id, { name, role });
       Toast.show({
         type: 'success',
-        text1: 'User updated',
-        text2: 'User details have been updated successfully.',
+        text1: 'Usuário atualizado',
+        text2: 'Os detalhes do usuário foram atualizados com sucesso.',
       });
       router.back();
     } catch {
       Toast.show({
         type: 'error',
-        text1: 'Error',
-        text2: 'Failed to update user',
+        text1: 'Erro',
+        text2: 'Falha ao atualizar usuário',
       });
     } finally {
       setIsLoading(false);
@@ -62,18 +72,19 @@ export default function EditUserScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       
       <View style={styles.fieldContainer}>
-        <Text style={[styles.label, { color: theme.text }]}>Name</Text>
+        <Text style={[styles.label, { color: theme.text }]}>Nome</Text>
         <Input
-            placeholder="Name"
+            placeholder="Nome"
             value={name}
             onChangeText={setName}
+            error={nameError}
         />
       </View>
       
       <View style={styles.fieldContainer}>
-        <Text style={[styles.label, { color: theme.text }]}>Email</Text>
+        <Text style={[styles.label, { color: theme.text }]}>E-mail</Text>
         <Input
-            placeholder="Email"
+            placeholder="E-mail"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -84,12 +95,12 @@ export default function EditUserScreen() {
       </View>
 
       <View style={styles.fieldContainer}>
-        <Text style={[styles.label, { color: theme.text }]}>Role</Text>
+        <Text style={[styles.label, { color: theme.text }]}>Função</Text>
         <TouchableOpacity 
             style={[styles.roleSelector, { borderColor: theme.border, backgroundColor: theme.white }]} 
             onPress={() => setShowDropdown(!showDropdown)}
         >
-            <Text style={[styles.roleValue, { color: theme.text }]}>{role}</Text>
+            <Text style={[styles.roleValue, { color: theme.text }]}>{role === 'STUDENT' ? 'ALUNO' : 'PROFESSOR'}</Text>
             <ChevronDown size={20} color={theme.icon} />
         </TouchableOpacity>
 
@@ -108,7 +119,7 @@ export default function EditUserScreen() {
                             setShowDropdown(false);
                         }}
                     >
-                        <Text style={[styles.dropdownItemText, { color: theme.text }]}>{r}</Text>
+                        <Text style={[styles.dropdownItemText, { color: theme.text }]}>{r === 'STUDENT' ? 'ALUNO' : 'PROFESSOR'}</Text>
                         {role === r && <View style={[styles.selectedDot, { backgroundColor: theme.primary }]} />}
                     </TouchableOpacity>
                 ))}
@@ -118,12 +129,12 @@ export default function EditUserScreen() {
 
       <View style={{ marginTop: 8, gap: 12 }}>
         <Button 
-            title={isLoading ? "Updating..." : "Update"} 
+            title={isLoading ? "Atualizando..." : "Atualizar"} 
             onPress={handleUpdate} 
-            disabled={isLoading}
+            disabled={isLoading || !isFormValid}
         />
         <Button 
-            title="Cancel" 
+            title="Cancelar" 
             variant="white"
             onPress={() => router.back()} 
         />

@@ -1,5 +1,5 @@
 // app/(auth)/signup.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, ScrollView, useColorScheme, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
 import { Input } from '@/components/ui/Input';
@@ -16,19 +16,43 @@ export default function SignupScreen() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [nameError, setNameError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+
   const router = useRouter();
   const colorScheme = useColorScheme() ?? 'light';
   const theme = Colors[colorScheme];
 
-  const handleSignup = async () => {
-    if (!name || !email || !password) {
-       Toast.show({
-        type: 'error',
-        text1: 'Missing fields',
-        text2: 'Please fill in all fields',
-       });
-       return;
+  useEffect(() => {
+    if (name.length > 0) {
+      const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
+      if (!nameRegex.test(name)) {
+        setNameError('O nome deve conter apenas letras.');
+      } else {
+        setNameError('');
+      }
+    } else {
+      setNameError('');
     }
+  }, [name]);
+
+  useEffect(() => {
+    if (password.length > 0) {
+      const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).+$/;
+      if (!passwordRegex.test(password)) {
+        setPasswordError('A senha deve conter ao menos uma letra maiúscula, um número e um caractere especial.');
+      } else {
+        setPasswordError('');
+      }
+    } else {
+      setPasswordError('');
+    }
+  }, [password]);
+
+  const isFormValid = name && email && password && !nameError && !passwordError;
+
+  const handleSignup = async () => {
+    if (!isFormValid) return;
 
     setIsLoading(true);
     const result = await signUpAPI(name, email, password);
@@ -38,22 +62,22 @@ export default function SignupScreen() {
       if (result.accessToken) {
          Toast.show({
             type: 'success',
-            text1: 'Welcome!',
-            text2: 'Account created successfully.',
+            text1: 'Bem-vindo!',
+            text2: 'Conta criada com sucesso.',
          });
          router.replace('/feed');
       } else {
          Toast.show({
             type: 'success',
-            text1: 'Account created',
-            text2: 'Please log in.',
+            text1: 'Conta criada',
+            text2: 'Por favor, faça o login.',
          });
          router.replace('/(auth)/login');
       }
     } else {
       Toast.show({
         type: 'error',
-        text1: 'Sign Up Failed',
+        text1: 'Falha no Cadastro',
         text2: result.message,
       });
     }
@@ -73,24 +97,26 @@ export default function SignupScreen() {
       </View>
 
       <View style={styles.form}>
-        <Text style={[styles.title, { color: theme.primary }]}>Sign Up</Text>
+        <Text style={[styles.title, { color: theme.primary }]}>Cadastrar</Text>
         <Input
-          placeholder="Name"
+          placeholder="Nome"
           value={name}
           onChangeText={setName}
+          error={nameError}
         />
         <Input
-          placeholder="Email"
+          placeholder="E-mail"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
         />
         <Input
-          placeholder="Password"
+          placeholder="Senha"
           value={password}
           onChangeText={setPassword}
           secureTextEntry={!showPassword}
+          error={passwordError}
           rightIcon={
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
               {showPassword ? (
@@ -102,13 +128,13 @@ export default function SignupScreen() {
           }
         />
         <Button 
-            title={isLoading ? "Signing Up..." : "Sign Up"} 
+            title={isLoading ? "Cadastrando..." : "Cadastrar"} 
             onPress={handleSignup} 
-            disabled={isLoading}
+            disabled={isLoading || !isFormValid}
         />
         
         <Link href="/(auth)/login" style={styles.link}>
-           <Text style={{ color: theme.text }}>Already have an account? <Text style={{ color: theme.action, fontWeight: 'bold' }}>Log in</Text></Text>
+           <Text style={{ color: theme.text }}>Já tem uma conta? <Text style={{ color: theme.action, fontWeight: 'bold' }}>Entrar</Text></Text>
         </Link>
       </View>
     </ScrollView>

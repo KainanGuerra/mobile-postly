@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, useColorScheme, TouchableOpacity, ScrollView } from 'react-native';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -17,19 +17,43 @@ export default function CreateUserScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [nameError, setNameError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  
   const router = useRouter();
   const colorScheme = useColorScheme() ?? 'light';
   const theme = Colors[colorScheme];
 
-  const handleCreate = async () => {
-    if (!name || !email || !password) {
-      Toast.show({
-        type: 'error',
-        text1: 'Missing fields',
-        text2: 'Please fill in all fields',
-      });
-      return;
+  useEffect(() => {
+    if (name.length > 0) {
+      const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
+      if (!nameRegex.test(name)) {
+        setNameError('O nome deve conter apenas letras.');
+      } else {
+        setNameError('');
+      }
+    } else {
+      setNameError('');
     }
+  }, [name]);
+
+  useEffect(() => {
+    if (password.length > 0) {
+      const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).+$/;
+      if (!passwordRegex.test(password)) {
+        setPasswordError('A senha deve conter ao menos uma letra maiúscula, um número e um caractere especial.');
+      } else {
+        setPasswordError('');
+      }
+    } else {
+      setPasswordError('');
+    }
+  }, [password]);
+
+  const isFormValid = name && email && password && !nameError && !passwordError;
+
+  const handleCreate = async () => {
+    if (!isFormValid) return;
 
     setIsLoading(true);
     try {
@@ -38,22 +62,22 @@ export default function CreateUserScreen() {
       if (result.success) {
         Toast.show({
             type: 'success',
-            text1: 'User created',
-            text2: 'User has been created successfully.',
+            text1: 'Usuário criado',
+            text2: 'O usuário foi criado com sucesso.',
         });
         router.back();
       } else {
         Toast.show({
             type: 'error',
-            text1: 'Error',
-            text2: result.message || 'Failed to create user',
+            text1: 'Erro',
+            text2: result.message || 'Falha ao criar usuário',
         });
       }
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Error',
-        text2: 'Failed to create user',
+        text1: 'Erro',
+        text2: 'Falha ao criar usuário',
       });
     } finally {
       setIsLoading(false);
@@ -67,18 +91,19 @@ export default function CreateUserScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.form}>
             <View style={styles.fieldContainer}>
-                <Text style={[styles.label, { color: theme.text }]}>Name</Text>
+                <Text style={[styles.label, { color: theme.text }]}>Nome</Text>
                 <Input
-                    placeholder="Name"
+                    placeholder="Nome"
                     value={name}
                     onChangeText={setName}
+                    error={nameError}
                 />
             </View>
             
             <View style={styles.fieldContainer}>
-                <Text style={[styles.label, { color: theme.text }]}>Email</Text>
+                <Text style={[styles.label, { color: theme.text }]}>E-mail</Text>
                 <Input
-                    placeholder="Email"
+                    placeholder="E-mail"
                     value={email}
                     onChangeText={setEmail}
                     keyboardType="email-address"
@@ -87,12 +112,13 @@ export default function CreateUserScreen() {
             </View>
 
             <View style={styles.fieldContainer}>
-                <Text style={[styles.label, { color: theme.text }]}>Password</Text>
+                <Text style={[styles.label, { color: theme.text }]}>Senha</Text>
                 <Input
-                    placeholder="Password"
+                    placeholder="Senha"
                     value={password}
                     onChangeText={setPassword}
                     secureTextEntry={!showPassword}
+                    error={passwordError}
                     rightIcon={
                         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
                         {showPassword ? (
@@ -106,12 +132,12 @@ export default function CreateUserScreen() {
             </View>
 
             <View style={styles.fieldContainer}>
-                <Text style={[styles.label, { color: theme.text }]}>Role</Text>
+                <Text style={[styles.label, { color: theme.text }]}>Função</Text>
                 <TouchableOpacity 
                     style={[styles.roleSelector, { borderColor: theme.border, backgroundColor: theme.white }]} 
                     onPress={() => setShowDropdown(!showDropdown)}
                 >
-                    <Text style={[styles.roleValue, { color: theme.text }]}>{role}</Text>
+                    <Text style={[styles.roleValue, { color: theme.text }]}>{role === 'STUDENT' ? 'ALUNO' : 'PROFESSOR'}</Text>
                     <ChevronDown size={20} color={theme.icon} />
                 </TouchableOpacity>
 
@@ -130,7 +156,7 @@ export default function CreateUserScreen() {
                                     setShowDropdown(false);
                                 }}
                             >
-                                <Text style={[styles.dropdownItemText, { color: theme.text }]}>{r}</Text>
+                                <Text style={[styles.dropdownItemText, { color: theme.text }]}>{r === 'STUDENT' ? 'ALUNO' : 'PROFESSOR'}</Text>
                                 {role === r && <View style={[styles.selectedDot, { backgroundColor: theme.primary }]} />}
                             </TouchableOpacity>
                         ))}
@@ -140,12 +166,12 @@ export default function CreateUserScreen() {
 
             <View style={{ marginTop: 20, gap: 12 }}>
                 <Button 
-                    title={isLoading ? "Creating..." : "Create User"} 
+                    title={isLoading ? "Criando..." : "Criar Usuário"} 
                     onPress={handleCreate} 
-                    disabled={isLoading}
+                    disabled={isLoading || !isFormValid}
                 />
                 <Button 
-                    title="Cancel" 
+                    title="Cancelar" 
                     variant="white"
                     onPress={() => router.back()} 
                 />

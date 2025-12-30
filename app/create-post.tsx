@@ -21,8 +21,8 @@ export default function CreatePostScreen() {
     if (!title || !content) {
       Toast.show({
         type: 'error',
-        text1: 'Missing fields',
-        text2: 'Please fill in both title and content',
+        text1: 'Campos ausentes',
+        text2: 'Por favor, preencha o título e o conteúdo',
       });
       return;
     }
@@ -30,8 +30,8 @@ export default function CreatePostScreen() {
     if (title.trim().length < 3) {
       Toast.show({
         type: 'error',
-        text1: 'Validation Error',
-        text2: 'Title must be at least 3 characters long.',
+        text1: 'Erro de Validação',
+        text2: 'O título deve ter pelo menos 3 caracteres.',
       });
       return;
     }
@@ -39,8 +39,8 @@ export default function CreatePostScreen() {
     if (content.trim().length < 10) {
       Toast.show({
         type: 'error',
-        text1: 'Validation Error',
-        text2: 'Content must be at least 10 characters long.',
+        text1: 'Erro de Validação',
+        text2: 'O conteúdo deve ter pelo menos 10 caracteres.',
       });
       return;
     }
@@ -50,15 +50,15 @@ export default function CreatePostScreen() {
       await createPost(title, content);
       Toast.show({
         type: 'success',
-        text1: 'Post created',
-        text2: 'Your post has been shared successfully.',
+        text1: 'Postagem criada',
+        text2: 'Sua postagem foi compartilhada com sucesso.',
       });
       router.back();
     } catch {
       Toast.show({
         type: 'error',
-        text1: 'Error',
-        text2: 'Failed to create post',
+        text1: 'Erro',
+        text2: 'Falha ao criar postagem',
       });
     } finally {
       setIsLoading(false);
@@ -69,13 +69,13 @@ export default function CreatePostScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       
       <Input
-        placeholder="Title"
+        placeholder="Título"
         value={title}
         onChangeText={setTitle}
       />
       
       <Input
-        placeholder="What's on your mind?"
+        placeholder="No que você está pensando?"
         value={content}
         onChangeText={setContent}
         multiline
@@ -84,7 +84,7 @@ export default function CreatePostScreen() {
         inputStyle={{ textAlignVertical: 'top', paddingTop: 12 }}
       />
       <Button 
-        title={isLoading ? "Posting..." : "Post"} 
+        title={isLoading ? "Postando..." : "Postar"} 
         onPress={handlePost} 
         disabled={isLoading}
       />

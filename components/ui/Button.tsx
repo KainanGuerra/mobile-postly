@@ -43,7 +43,11 @@ export function Button({ title, variant = 'action', ...props }: ButtonProps) {
       alignItems: 'center',
       borderWidth: borderWidth,
       borderColor: theme.border,
-      ...(Platform.OS === 'web' ? { outlineStyle: 'none' } : {}) as any,
+      opacity: props.disabled ? 0.6 : 1,
+      ...(Platform.OS === 'web' ? { 
+        outlineStyle: 'none',
+        cursor: props.disabled ? 'not-allowed' : 'pointer'
+      } : {}) as any,
     },
     buttonText: {
       color: textColor,

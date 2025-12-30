@@ -26,8 +26,8 @@ export default function EditPostScreen() {
     if (!title || !content) {
       Toast.show({
         type: 'error',
-        text1: 'Missing fields',
-        text2: 'Please fill in both title and content',
+        text1: 'Campos ausentes',
+        text2: 'Por favor, preencha o título e o conteúdo',
       });
       return;
     }
@@ -35,8 +35,8 @@ export default function EditPostScreen() {
     if (title.trim().length < 3) {
       Toast.show({
         type: 'error',
-        text1: 'Validation Error',
-        text2: 'Title must be at least 3 characters long.',
+        text1: 'Erro de Validação',
+        text2: 'O título deve ter pelo menos 3 caracteres.',
       });
       return;
     }
@@ -44,8 +44,8 @@ export default function EditPostScreen() {
     if (content.trim().length < 10) {
       Toast.show({
         type: 'error',
-        text1: 'Validation Error',
-        text2: 'Content must be at least 10 characters long.',
+        text1: 'Erro de Validação',
+        text2: 'O conteúdo deve ter pelo menos 10 caracteres.',
       });
       return;
     }
@@ -55,15 +55,15 @@ export default function EditPostScreen() {
       await updatePost(id, title, content);
       Toast.show({
         type: 'success',
-        text1: 'Post updated',
-        text2: 'Your post has been updated successfully.',
+        text1: 'Postagem atualizada',
+        text2: 'Sua postagem foi atualizada com sucesso.',
       });
       router.back();
     } catch {
       Toast.show({
         type: 'error',
-        text1: 'Error',
-        text2: 'Failed to update post',
+        text1: 'Erro',
+        text2: 'Falha ao atualizar postagem',
       });
     } finally {
       setIsLoading(false);
@@ -74,13 +74,13 @@ export default function EditPostScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       
       <Input
-        placeholder="Title"
+        placeholder="Título"
         value={title}
         onChangeText={setTitle}
       />
       
       <Input
-        placeholder="What's on your mind?"
+        placeholder="No que você está pensando?"
         value={content}
         onChangeText={setContent}
         multiline
@@ -89,12 +89,12 @@ export default function EditPostScreen() {
         inputStyle={{ textAlignVertical: 'top', paddingTop: 12 }}
       />
       <Button 
-        title={isLoading ? "Updating..." : "Update"} 
+        title={isLoading ? "Atualizando..." : "Atualizar"} 
         onPress={handleUpdate} 
         disabled={isLoading}
       />
       <Button 
-        title="Cancel" 
+        title="Cancelar" 
         variant="white"
         onPress={() => router.back()} 
         style={{ marginTop: 12 }}
