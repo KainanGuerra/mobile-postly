@@ -52,19 +52,14 @@ export default function LoginScreen() {
   return (
     <ScrollView contentContainerStyle={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.header}>
-        <Image
-          source={require('../../assets/logo.svg')}
-          style={{ width: 150, height: 50 }}
-          contentFit="contain"
-        />
-      </View>
-
-      <View style={styles.hero}>
-        <Image
-          source={require('../../assets/hero-illustration.svg')}
-          style={{ width: 280, height: 200 }}
-          contentFit="contain"
-        />
+        <View style={styles.logoContainer}>
+          <Image
+            source={require('../../assets/logo.svg')}
+            style={{ width: 40, height: 40 }}
+            contentFit="contain"
+          />
+          <Text style={[styles.logoTitle, { color: theme.primary }]}>Postly</Text>
+        </View>
       </View>
 
       <View style={styles.form}>
@@ -96,10 +91,7 @@ export default function LoginScreen() {
             onPress={handleLogin} 
             disabled={isLoading}
         />
-        
-        <Link href="/(auth)/signup" style={styles.link}>
-          <Text style={{ color: theme.text }}>Don't have an account? <Text style={{ color: theme.action, fontWeight: 'bold' }}>Sign up</Text></Text>
-        </Link>
+
       </View>
     </ScrollView>
   );
@@ -113,17 +105,22 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     marginTop: 20,
-    marginBottom: 20,
+    marginBottom: 40,
   },
-  hero: {
+  logoContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 30,
+    gap: 8,
+  },
+  logoTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   form: {
     gap: 16,
   },
   title: {
-    fontSize: 32,
+    fontSize: 30,
     fontWeight: 'bold',
     marginBottom: 8,
     textAlign: 'center',

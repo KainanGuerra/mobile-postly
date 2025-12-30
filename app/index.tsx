@@ -16,11 +16,14 @@ export default function LandingPage() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.header}>
-          <Image
-            source={require('../assets/logo.svg')}
-            style={{ width: 120, height: 40 }}
-            contentFit="contain"
-          />
+          <View style={styles.logoContainer}>
+            <Image
+              source={require('../assets/logo.svg')}
+              style={{ width: 40, height: 40 }}
+              contentFit="contain"
+            />
+            <Text style={[styles.logoTitle, { color: theme.primary }]}>Postly</Text>
+          </View>
           <View style={styles.headerRight}>
              <Button 
                 title="Entrar" 
@@ -41,6 +44,13 @@ export default function LandingPage() {
               A Postly é a plataforma onde professores podem compartilhar conteúdos, 
               ideias e novidades, e alunos podem reagir e comentar em tempo real.
             </Text>
+          <View style={styles.heroImageContainer}>
+            <Image 
+              source={require('../assets/hero-illustration.svg')}
+              style={{ width: '100%', height: 300 }}
+              contentFit="contain"
+            />
+          </View>
             <View style={styles.ctaContainer}>
                 <Button 
                     title="Saiba mais" 
@@ -50,13 +60,6 @@ export default function LandingPage() {
             </View>
           </View>
           
-          <View style={styles.heroImageContainer}>
-            <Image 
-              source={require('../assets/hero-illustration.svg')}
-              style={{ width: '100%', height: 300 }}
-              contentFit="contain"
-            />
-          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -75,6 +78,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 40,
+  },
+  logoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  logoTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
   },
   headerRight: {
       flexDirection: 'row',

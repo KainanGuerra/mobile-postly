@@ -6,8 +6,7 @@ import { Input } from '@/components/ui/Input';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Colors } from '@/constants/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getPosts, Post as PostType, deletePost } from '@/lib/api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getPosts, Post as PostType, deletePost, getAuth } from '@/lib/api';
 import { Pencil, Trash, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import Toast from 'react-native-toast-message';
 
@@ -155,12 +154,13 @@ export default function FeedScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
-      AsyncStorage.getItem('auth').then(authString => {
+      getAuth().then(authString => {
           if (authString) {
               const auth = JSON.parse(authString);
               setCurrentUser(auth.user);
@@ -168,7 +168,7 @@ export default function FeedScreen() {
       });
   }, []);
 
-  const fetchPosts = useCallback(async (pageToFetch: number, searchTerm = search) => {
+  const fetchPosts = useCallback(async (pageToFetch: number, searchTerm: string) => {
     setLoading(true);
     try {
         const result = await getPosts(pageToFetch, 10, searchTerm);
@@ -181,32 +181,35 @@ export default function FeedScreen() {
         setLoading(false);
         setRefreshing(false);
     }
-  }, [search]);
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
-      fetchPosts(page, search);
-    }, [fetchPosts, page, search])
+      fetchPosts(page, debouncedSearch);
+    }, [fetchPosts, page, debouncedSearch])
   );
 
+  // Debounce search
   useEffect(() => {
-      const delayDebounceFn = setTimeout(() => {
-        if (search) {
-             fetchPosts(1, search);
-        }
-      }, 500);
-
-      return () => clearTimeout(delayDebounceFn);
+    const timer = setTimeout(() => {
+        setDebouncedSearch(search);
+    }, 500);
+    return () => clearTimeout(timer);
   }, [search]);
+
+  // Fetch when debounced search or page changes
+  useEffect(() => {
+    fetchPosts(page, debouncedSearch);
+  }, [debouncedSearch, page, fetchPosts]);
 
   const onRefresh = () => {
     setRefreshing(true);
-    fetchPosts(1, search);
+    fetchPosts(1, debouncedSearch);
   };
 
   const handlePageChange = (newPage: number) => {
       if (newPage >= 1 && newPage <= totalPages) {
-          fetchPosts(newPage, search);
+          fetchPosts(newPage, debouncedSearch);
       }
   };
 

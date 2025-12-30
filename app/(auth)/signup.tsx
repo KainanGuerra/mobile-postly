@@ -62,11 +62,14 @@ export default function SignupScreen() {
   return (
     <ScrollView contentContainerStyle={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.header}>
-        <Image
-          source={require('../../assets/logo.svg')}
-          style={{ width: 150, height: 50 }}
-          contentFit="contain"
-        />
+        <View style={styles.logoContainer}>
+          <Image
+            source={require('../../assets/logo.svg')}
+            style={{ width: 40, height: 40 }}
+            contentFit="contain"
+          />
+          <Text style={[styles.logoTitle, { color: theme.primary }]}>Postly</Text>
+        </View>
       </View>
 
       <View style={styles.form}>
@@ -123,11 +126,20 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 40,
   },
+  logoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  logoTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
   form: {
     gap: 16,
   },
   title: {
-    fontSize: 32,
+    fontSize: 30,
     fontWeight: 'bold',
     marginBottom: 16,
     textAlign: 'center',

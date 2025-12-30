@@ -34,6 +34,24 @@ export default function RootLayout() {
               headerBackTitleVisible: false,
             }} 
           />
+          <Stack.Screen 
+            name="edit-user" 
+            options={{ 
+              title: 'Edit User',
+              headerStyle: { backgroundColor: theme.primary },
+              headerTintColor: theme.white,
+              headerBackTitleVisible: false,
+            }} 
+          />
+          <Stack.Screen 
+            name="create-user" 
+            options={{ 
+              title: 'Create User',
+              headerStyle: { backgroundColor: theme.primary },
+              headerTintColor: theme.white,
+              headerBackTitleVisible: false,
+            }} 
+          />
         </Stack>
         <Toast />
       </>

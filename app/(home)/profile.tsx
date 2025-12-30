@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getAuth, clearAuth } from '@/lib/api';
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -14,7 +14,7 @@ export default function ProfileScreen() {
   const [user, setUser] = useState<{ name: string; email: string } | null>(null);
 
   useEffect(() => {
-    AsyncStorage.getItem('auth').then(authString => {
+    getAuth().then(authString => {
         if (authString) {
             const auth = JSON.parse(authString);
             setUser(auth.user);
@@ -23,7 +23,7 @@ export default function ProfileScreen() {
   }, []);
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem('auth');
+    await clearAuth();
     router.replace('/(auth)/login');
   };
 

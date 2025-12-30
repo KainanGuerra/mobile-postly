@@ -11,7 +11,7 @@ const tintColorDark = '#8a2be2ff'; // Match light mode tint
 export const Colors = {
   light: {
     text: '#333333',
-    background: '#FFFFFF', // Changed from #FDFBFA
+    background: '#FDFBFA', // Changed from #FDFBFA
     tint: tintColorLight,
     icon: '#8a2be2ff',
     tabIconDefault: '#E0E0E0',
@@ -24,13 +24,13 @@ export const Colors = {
   },
   dark: {
     text: '#333333', // Dark text on white background
-    background: '#FFFFFF', // Always white
+    background: '#FDFBFA',
     tint: tintColorDark,
     icon: '#4A2E6F',
     tabIconDefault: '#E0E0E0',
     tabIconSelected: tintColorDark,
     primary: '#4A2E6F',
-    action: '#8A2BE2',
+    action: '#4A2E6F',
     cta: '#F26C6C',
     white: '#FFFFFF',
     border: '#E0E0E0',

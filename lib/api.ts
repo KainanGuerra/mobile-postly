@@ -1,5 +1,117 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
 import { BASE_API } from './config';
+
+async function setAuth(data: any) {
+    const jsonValue = JSON.stringify(data);
+    if (Platform.OS === 'web') {
+        await AsyncStorage.setItem("auth", jsonValue);
+    } else {
+        await SecureStore.setItemAsync("auth", jsonValue);
+    }
+}
+
+export async function getAuth() {
+    if (Platform.OS === 'web') {
+        return await AsyncStorage.getItem("auth");
+    } else {
+        return await SecureStore.getItemAsync("auth");
+    }
+}
+
+export async function clearAuth() {
+    if (Platform.OS === 'web') {
+        await AsyncStorage.removeItem("auth");
+    } else {
+        await SecureStore.deleteItemAsync("auth");
+    }
+}
+
+async function getToken() {
+    try {
+        const authString = await getAuth();
+        return authString ? JSON.parse(authString).token : "";
+    } catch (e) {
+        return "";
+    }
+}
+
+export async function getUsers(filter: { email?: string; role?: string } = {}) {
+    try {
+        const token = await getToken();
+
+        let url = `${BASE_API}/auth`;
+        const params = new URLSearchParams();
+        if (filter.email) params.append('email', filter.email);
+        if (filter.role) params.append('role', filter.role);
+        
+        const queryString = params.toString();
+        if (queryString) url += `?${queryString}`;
+
+        const res = await fetch(url, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!res.ok) {
+            return [];
+        }
+
+        const data = await res.json();
+        return Array.isArray(data) ? data : (data.docs || []); 
+
+    } catch (error) {
+        console.error("getUsers error:", error);
+        return [];
+    }
+}
+
+export async function removeUser(id: string) {
+    try {
+        const token = await getToken();
+
+        const res = await fetch(`${BASE_API}/auth/${id}/remove`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ deleted: true }),
+        });
+
+        if (!res.ok) return false;
+        return true;
+    } catch (error) {
+        console.error("removeUser error:", error);
+        return false;
+    }
+}
+
+export async function edit(id: string, body: any) {
+    try {
+        const token = await getToken();
+
+        const res = await fetch(`${BASE_API}/auth/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(body),
+        });
+
+        if (!res.ok) throw new Error('Failed to update user');
+
+        return await res.json();
+    } catch (error) {
+        console.error("edit user error:", error);
+        throw error;
+    }
+}
+
 
 export async function loginAPI(email: string, password: string) {
   try {
@@ -15,7 +127,7 @@ export async function loginAPI(email: string, password: string) {
     }
 
     const data = await res.json();
-    await AsyncStorage.setItem("auth", JSON.stringify({ user: data.user, token: data.accessToken }));
+    await setAuth({ user: data.user, token: data.accessToken });
     return { success: true, user: data.user, accessToken: data.accessToken };
   } catch (err: any) {
     console.error("LoginAPI error:", err);
@@ -36,13 +148,9 @@ export async function signUpAPI(name: string, email: string, password: string) {
         return { success: false, message: errorData?.message || "Sign up failed" };
       }
   
-      // Auto login or just return success? Usually APIs return token on signup too.
-      // If not, we might need to ask user to login.
-      // Assuming it returns same structure as login for now, or just success.
-      // Let's assume it returns user and token like login, or we can check the response.
       const data = await res.json();
       if (data.accessToken) {
-         await AsyncStorage.setItem("auth", JSON.stringify({ user: data.user, token: data.accessToken }));
+         await setAuth({ user: data.user, token: data.accessToken });
          return { success: true, user: data.user, accessToken: data.accessToken };
       }
       return { success: true };
@@ -50,6 +158,31 @@ export async function signUpAPI(name: string, email: string, password: string) {
     } catch (err: any) {
       console.error("SignUpAPI error:", err);
       return { success: false, message: "Connection error" };
+    }
+}
+
+export async function createUser(name: string, email: string, password: string, role?: string) {
+    try {
+        const token = await getToken();
+
+        const res = await fetch(`${BASE_API}/auth/sign-up`, {
+            method: "POST",
+            headers: { 
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({ name, email, password, role }),
+        });
+
+        if (!res.ok) {
+            const errorData = await res.json().catch(() => null);
+            return { success: false, message: errorData?.message || "Failed to create user" };
+        }
+
+        return { success: true };
+    } catch (err: any) {
+        console.error("createUser error:", err);
+        return { success: false, message: "Connection error" };
     }
 }
 
@@ -63,8 +196,7 @@ export interface Post {
 
 export async function getPosts(page = 1, limit = 10, searchTerm = "") {
     try {
-        const authString = await AsyncStorage.getItem("auth");
-        const token = authString ? JSON.parse(authString).token : "";
+        const token = await getToken();
 
         let url = `${BASE_API}/posts?page=${page}&limit=${limit}`;
         if (searchTerm) {
@@ -102,8 +234,7 @@ export async function getPosts(page = 1, limit = 10, searchTerm = "") {
 // lib/api.ts (snippet)
 export async function updatePost(id: string, title: string, content: string) {
     try {
-        const authString = await AsyncStorage.getItem("auth");
-        const token = authString ? JSON.parse(authString).token : "";
+        const token = await getToken();
 
         const res = await fetch(`${BASE_API}/posts/${id}`, {
             method: 'PATCH',
@@ -125,8 +256,7 @@ export async function updatePost(id: string, title: string, content: string) {
 
 export async function deletePost(id: string) {
     try {
-        const authString = await AsyncStorage.getItem("auth");
-        const token = authString ? JSON.parse(authString).token : "";
+        const token = await getToken();
 
         const res = await fetch(`${BASE_API}/posts/${id}/remove`, {
             method: 'PATCH',
@@ -147,8 +277,7 @@ export async function deletePost(id: string) {
 
 export async function createPost(title: string, content: string) {
     try {
-        const authString = await AsyncStorage.getItem("auth");
-        const token = authString ? JSON.parse(authString).token : "";
+        const token = await getToken();
 
         const res = await fetch(`${BASE_API}/posts`, {
             method: 'POST',
