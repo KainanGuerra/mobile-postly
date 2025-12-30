@@ -1,33 +1,21 @@
 // app/(home)/_layout.tsx
-import { Tabs, useRouter } from 'expo-router';
+import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useColorScheme, TouchableOpacity, View, Text } from 'react-native';
 import { Colors } from '@/constants/theme';
 import { LogOut } from 'lucide-react-native';
-import { useEffect, useState } from 'react';
 import { Image } from 'expo-image';
-import { getAuth, clearAuth } from '@/lib/api';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function HomeLayout() {
   const colorScheme = useColorScheme() ?? 'light';
   const theme = Colors[colorScheme];
-  const router = useRouter();
-  const [isProfessor, setIsProfessor] = useState(false);
+  const { user, logout } = useAuth();
 
-  useEffect(() => {
-      getAuth().then(authString => {
-          if (authString) {
-              const user = JSON.parse(authString).user;
-              if (user?.role === 'PROFESSOR') {
-                  setIsProfessor(true);
-              }
-          }
-      });
-  }, []);
+  const isProfessor = user?.role === 'PROFESSOR';
 
   const handleLogout = async () => {
-    await clearAuth();
-    router.replace('/(auth)/login');
+    await logout();
   };
 
   return (

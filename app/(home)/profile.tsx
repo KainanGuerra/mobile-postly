@@ -1,30 +1,33 @@
 // app/(home)/profile.tsx
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, useColorScheme, ScrollView } from 'react-native';
 import { Button } from '@/components/ui/Button';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getAuth, clearAuth } from '@/lib/api';
+import { useAuth } from '@/contexts/AuthContext';
+import Toast from 'react-native-toast-message';
 
 export default function ProfileScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme() ?? 'light';
   const theme = Colors[colorScheme];
-  const [user, setUser] = useState<{ id: string; name: string; email: string } | null>(null);
-
-  useEffect(() => {
-    getAuth().then(authString => {
-        if (authString) {
-            const auth = JSON.parse(authString);
-            setUser(auth.user);
-        }
-    });
-  }, []);
+  const { user, logout } = useAuth();
 
   const handleLogout = async () => {
-    await clearAuth();
-    router.replace('/(auth)/login');
+    await logout();
+  };
+
+  const handleChangePassword = () => {
+    if (user?.role === 'STUDENT') {
+      Toast.show({
+        type: 'info',
+        text1: 'Acesso Restrito',
+        text2: 'A alteração de senha não está disponível para alunos.',
+      });
+      return;
+    }
+    router.push('/change-password');
   };
 
   return (
@@ -38,8 +41,9 @@ export default function ProfileScreen() {
         <View style={styles.actions}>
             <Button 
                 title="Alterar Senha" 
-                onPress={() => router.push('/change-password')} 
+                onPress={handleChangePassword} 
                 variant="primary"
+                disabled={user?.role === 'STUDENT'}
             />
             <Button 
                 title="Sair" 

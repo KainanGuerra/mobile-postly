@@ -9,6 +9,7 @@ import { Colors } from '@/constants/theme';
 import { signUpAPI } from '@/lib/api';
 import Toast from 'react-native-toast-message';
 import { Eye, EyeOff } from 'lucide-react-native';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function SignupScreen() {
   const [name, setName] = useState('');
@@ -22,6 +23,7 @@ export default function SignupScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme() ?? 'light';
   const theme = Colors[colorScheme];
+  const { login } = useAuth();
 
   useEffect(() => {
     if (name.length > 0) {
@@ -31,8 +33,6 @@ export default function SignupScreen() {
       } else {
         setNameError('');
       }
-    } else {
-      setNameError('');
     }
   }, [name]);
 
@@ -44,8 +44,6 @@ export default function SignupScreen() {
       } else {
         setPasswordError('');
       }
-    } else {
-      setPasswordError('');
     }
   }, [password]);
 
@@ -59,7 +57,8 @@ export default function SignupScreen() {
     setIsLoading(false);
 
     if (result.success) {
-      if (result.accessToken) {
+      if (result.accessToken && result.user) {
+         await login(result.user, result.accessToken);
          Toast.show({
             type: 'success',
             text1: 'Bem-vindo!',

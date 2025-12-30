@@ -3,18 +3,20 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, useColorScheme, ScrollView, TouchableOpacity } from 'react-native';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { useRouter } from 'expo-router';
+import { useRouter, Redirect } from 'expo-router';
 import { Colors } from '@/constants/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getAuth, edit } from '@/lib/api';
+import { edit } from '@/lib/api';
 import Toast from 'react-native-toast-message';
 import { Eye, EyeOff } from 'lucide-react-native';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function ChangePasswordScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme() ?? 'light';
   const theme = Colors[colorScheme];
-  const [user, setUser] = useState<{ id: string } | null>(null);
+  const { user, isLoading } = useAuth();
+
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -22,15 +24,6 @@ export default function ChangePasswordScreen() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
-
-  useEffect(() => {
-    getAuth().then(authString => {
-        if (authString) {
-            const auth = JSON.parse(authString);
-            setUser(auth.user);
-        }
-    });
-  }, []);
 
   useEffect(() => {
     if (password.length > 0) {
@@ -52,6 +45,11 @@ export default function ChangePasswordScreen() {
       setConfirmPasswordError('');
     }
   }, [confirmPassword, password]);
+
+  if (isLoading) return null;
+  if (user?.role === 'STUDENT') {
+    return <Redirect href="/profile" />;
+  }
 
   const isFormValid = password && confirmPassword && !passwordError && !confirmPasswordError;
 

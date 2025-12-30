@@ -6,9 +6,10 @@ import { Input } from '@/components/ui/Input';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Colors } from '@/constants/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { getPosts, Post as PostType, deletePost, getAuth } from '@/lib/api';
+import { getPosts, Post as PostType, deletePost } from '@/lib/api';
 import { Pencil, Trash, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import Toast from 'react-native-toast-message';
+import { useAuth } from '@/contexts/AuthContext';
 
 function Post({ post, currentUser, onDeleteSuccess }: { post: PostType, currentUser: any, onDeleteSuccess: () => void }) {
     const colorScheme = useColorScheme() ?? 'light';
@@ -157,16 +158,7 @@ export default function FeedScreen() {
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [currentUser, setCurrentUser] = useState<any>(null);
-
-  useEffect(() => {
-      getAuth().then(authString => {
-          if (authString) {
-              const auth = JSON.parse(authString);
-              setCurrentUser(auth.user);
-          }
-      });
-  }, []);
+  const { user: currentUser } = useAuth();
 
   const fetchPosts = useCallback(async (pageToFetch: number, searchTerm: string) => {
     setLoading(true);

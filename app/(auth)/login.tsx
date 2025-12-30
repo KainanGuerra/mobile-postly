@@ -4,11 +4,12 @@ import { StyleSheet, View, Text, ScrollView, useColorScheme, TouchableOpacity } 
 import { Image } from 'expo-image';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
-import { Link, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/theme';
 import { loginAPI } from '@/lib/api';
 import Toast from 'react-native-toast-message';
 import { Eye, EyeOff } from 'lucide-react-native';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -18,6 +19,7 @@ export default function LoginScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme() ?? 'light';
   const theme = Colors[colorScheme];
+  const { login } = useAuth();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -33,7 +35,8 @@ export default function LoginScreen() {
     const result = await loginAPI(email, password);
     setIsLoading(false);
 
-    if (result.success) {
+    if (result.success && result.user && result.accessToken) {
+      await login(result.user, result.accessToken);
       Toast.show({
         type: 'success',
         text1: 'Bem-vindo de volta!',
