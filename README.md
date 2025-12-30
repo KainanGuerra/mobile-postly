@@ -1,96 +1,157 @@
-# 📌 Mobile Postly - FIAP
+# Mobile Postly 📱
 
-Aplicativo móvel desenvolvido em **React Native** com **Expo** para o projeto Tech Challenge da FIAP.
-Este repositório contém o código-fonte do aplicativo mobile (Android, iOS e Web), integrando com a API para permitir que professores e alunos compartilhem conteúdos e interajam em tempo real.
+Uma aplicação móvel moderna construída com React Native e Expo para gerenciamento de postagens e interação de usuários, desenvolvida como parte de um projeto da FIAP.
 
-## 📄 Documentação
+## 🚀 Visão Geral
 
-Para informações adicionais, credenciais de autenticação e regras de negócio, consulte a documentação interna:
+O **Mobile Postly** é uma plataforma de rede social simplificada, projetada para facilitar a comunicação e o compartilhamento de ideias em um ambiente acadêmico ou corporativo. O projeto nasceu da necessidade de uma interface ágil e intuitiva para o gerenciamento de postagens, onde a hierarquia de usuários desempenha um papel fundamental na governança do conteúdo.
 
-🔗 [**Google Docs (Fiap Tech Challenge)**](https://docs.google.com/document/d/1z1TGVuseEpAEH6ZGFzFmyrys5lmMWnv5)
+## 🎯 Objetivo
+Prover uma experiência mobile fluida (Native-like) que permita aos usuários interagir com conteúdos em tempo real, garantindo que a segurança e o controle de acesso sejam mantidos de forma rigorosa através de diferentes níveis de privilégios (Alunos e Professores).
 
-## 🚀 Tecnologias
 
--   [Expo](https://expo.dev/) -- Plataforma para desenvolvimento React Native
--   [React Native](https://reactnative.dev/) -- Framework para apps nativos
--   [Expo Router](https://docs.expo.dev/router/introduction/) -- Roteamento baseado em arquivos
--   [TypeScript](https://www.typescriptlang.org/) -- Tipagem estática
--   [Lucide React Native](https://lucide.dev/guide/packages/lucide-react-native) -- Ícones
--   [AsyncStorage](https://react-native-async-storage.github.io/async-storage/) -- Armazenamento local
--   [React Native Toast Message](https://github.com/calintamas/react-native-toast-message) -- Notificações Toast
 
-## ✨ Funcionalidades
+ 🌐 **Acesse aqui:** [mobile-postly.vercel.app](https://mobile-postly.vercel.app/)
 
--   **Autenticação**: Login e Cadastro de usuários (Alunos e Professores).
--   **Feed de Postagens**: Visualização de posts com paginação e atualização automática ("pull to refresh").
--   **Criação e Edição**: Professores podem criar, editar e excluir suas postagens.
--   **Perfil**: Visualização de dados do usuário e logout.
--   **Interface Adaptável**: Suporte a temas claro/escuro e responsividade para Web e Mobile.
+## 🧩 Metodologia e Desenvolvimento
 
-## 📦 Instalação e uso
+O desenvolvimento deste projeto foi pautado em práticas modernas de engenharia de software:
 
-Clone o repositório:
+- **Desenvolvimento Ágil:** Iterações focadas em entrega de valor, com separação clara de funcionalidades por módulos.
+- **Mobile First:** Priorização da experiência em dispositivos móveis, utilizando o Expo para garantir paridade entre Android e iOS.
+- **Clean Code:** Código escrito com foco na legibilidade e facilidade de manutenção, seguindo padrões de nomenclatura e responsabilidade única.
 
-```bash
-git clone https://github.com/kainanguerra/mobile-postly.git
-cd mobile-postly
+## 🏗 Arquitetura e Decisões de Design
+
+A arquitetura do Postly foi desenhada para ser escalável e de fácil manutenção, utilizando o padrão de **Separation of Concerns (Separação de Preocupações)**:
+
+1.  **Camada de Navegação (Expo Router):** Utiliza navegação baseada em arquivos, o que reduz o boilerplate e organiza as rotas de forma lógica e hierárquica (Auth vs. App).
+2.  **Camada de Estado Global (Context API):** Gerenciamento centralizado de autenticação e dados do usuário logado, garantindo consistência em toda a aplicação sem a complexidade excessiva de bibliotecas maiores como Redux.
+3.  **Camada de Serviços (Service Layer):** Centralização de todas as chamadas de API em `lib/api.ts`, isolando a lógica de comunicação HTTP dos componentes de interface.
+4.  **Componentização Atômica:** Interface construída sobre componentes pequenos e reutilizáveis (Input, Button), facilitando atualizações visuais globais.
+
+## ✨ Boas Práticas Implementadas
+
+- **Tipagem Estrita (TypeScript):** Uso extensivo de interfaces e tipos para evitar erros em tempo de execução e melhorar o intellisense.
+- **Segurança de Dados:** Uso de `Expo SecureStore` para persistência de tokens sensíveis, utilizando criptografia nativa do sistema operacional (Keychain no iOS e Keystore no Android).
+- **Tratamento de Erros:** Implementação de feedbacks visuais (Toasts) e tratamentos de exceção em todas as chamadas assíncronas para garantir que o usuário nunca fique sem resposta.
+- **Tematização Dinâmica:** Suporte nativo a Dark Mode e Light Mode através de um sistema de constantes centralizado.
+- **Otimização de Performance:** Uso de componentes nativos do React Native (FlatList) para renderização eficiente de listas longas (Feed de posts e lista de usuários).
+
+## 🛠 Tecnologias (Tech Stack)
+
+- **Framework:** [Expo](https://expo.dev/) (SDK 52) com [React Native](https://reactnative.dev/)
+- **Linguagem:** [TypeScript](https://www.typescriptlang.org/)
+- **Navegação:** [Expo Router](https://docs.expo.dev/router/introduction/) (Navegação baseada em arquivos com Stack e Tabs)
+- **Ícones:** [Lucide React Native](https://lucide.dev/guide/packages/lucide-react-native)
+- **Autenticação:** Provedor de autenticação customizado usando Context API
+- **Armazenamento:** `expo-secure-store` (Armazenamento criptografado para nativo) & `@react-native-async-storage/async-storage` (fallback para Web)
+- **Feedback:** `react-native-toast-message`
+- **Estilização:** Sistema de tema dinâmico com suporte aos modos Claro/Escuro (configurado em `constants/theme.ts`)
+
+## 🏗 Arquitetura & Estrutura do Projeto
+
+O projeto segue uma estrutura modular focada na separação de responsabilidades:
+
+```text
+├── app/                  # Diretório do Expo Router (Telas e navegação)
+│   ├── (auth)/           # Fluxos de autenticação (Login/Cadastro)
+│   ├── (home)/           # Abas principais protegidas (Feed/Perfil/Usuários)
+│   ├── _layout.tsx       # Layout raiz, lógica de proteção e config de navegação
+│   └── ...               # Telas independentes (Criar/Editar Post/Usuário, Alterar Senha)
+├── assets/               # Ativos estáticos (imagens, logos, SVGs)
+├── components/           # Componentes reutilizáveis
+│   └── ui/               # Componentes de UI atômicos (Botão, Input)
+├── constants/            # Temas, cores e constantes globais
+├── contexts/             # Contextos React (Estado global como AuthContext)
+├── hooks/                # Hooks customizados (Temas, esquemas de cores)
+├── lib/                  # Configurações de biblioteca e serviços de API
+│   ├── api.ts            # Métodos centralizados de serviço de API (Baseado em Fetch)
+│   └── config.ts         # Configurações globais (URLs base)
+└── scripts/              # Scripts de manutenção do projeto
 ```
 
-Instale as dependências:
+## 🔐 Autenticação & Autorização
 
-```bash
-npm install
-```
+O aplicativo implementa um fluxo de autenticação robusto gerenciado pelo `AuthContext.tsx` e aplicado no nível de layout em `app/_layout.tsx`.
 
-Rodar a aplicação:
+### Funções & Permissões (Roles):
+- **ALUNO (STUDENT):**
+    - Visualizar o feed.
+    - Criar, editar e excluir suas próprias postagens.
+    - Gerenciar seu próprio perfil.
+- **PROFESSOR:**
+    - Todas as permissões de Aluno.
+    - Acesso à aba de gerenciamento de **Usuários**.
+    - Criar, editar e remover outros usuários.
+    - Alterar senhas de usuários.
 
-```bash
-# Iniciar o projeto (menu interativo para Android, iOS ou Web)
-npm start
+### Segurança:
+- Autenticação baseada em JWT.
+- Tokens de autenticação são armazenados usando `SecureStore` em dispositivos móveis para criptografia em nível de hardware.
+- Proteção de rotas impede o acesso não autorizado a telas protegidas.
 
-# Ou rodar especificamente para uma plataforma:
-npm run android
-npm run ios
-npm run web
-```
+## 🌐 Documentação Técnica da API
 
-## ⚙️ Scripts disponíveis
+A aplicação se comunica com uma API RESTful hospedada em:
+`https://fiap-code-project.onrender.com/fiap/v1`
 
--   `npm start` → inicia o servidor de desenvolvimento do Expo
--   `npm run android` → roda no emulador Android ou dispositivo conectado
--   `npm run ios` → roda no simulador iOS (macOS necessário)
--   `npm run web` → roda a versão web no navegador
--   `npm run lint` → roda o linter para verificar erros de código
--   `npm run reset-project` → reseta o cache do projeto (útil se houver problemas de build)
+### Principais Endpoints & Serviços (`lib/api.ts`):
 
-## 📂 Estrutura de pastas
+| Módulo | Propósito | Método | Endpoint |
+| :--- | :--- | :--- | :--- |
+| **Auth** | Login de Usuário | POST | `/auth/sign-in` |
+| **Auth** | Cadastro de Usuário | POST | `/auth/sign-up` |
+| **Posts** | Listar Posts (Paginado/Busca) | GET | `/posts` |
+| **Posts** | Criar Post | POST | `/posts` |
+| **Posts** | Atualizar Post | PATCH | `/posts/:id` |
+| **Posts** | Excluir Post (Soft delete) | PATCH | `/posts/:id/remove` |
+| **Users** | Listar Usuários (Filtrável) | GET | `/auth` |
+| **Users** | Atualizar Usuário | PATCH | `/auth/:id` |
+| **Users** | Excluir Usuário (Soft delete) | PATCH | `/auth/:id/remove` |
 
-```bash
-mobile-postly/
-├── app/             # Rotas e telas do aplicativo (Expo Router)
-│   ├── (auth)/      # Rotas de autenticação (Login, Signup)
-│   ├── (home)/      # Rotas principais (Feed, Profile)
-│   ├── _layout.tsx  # Layout raiz e configurações de navegação
-│   └── ...
-├── assets/          # Imagens, fontes e ícones
-├── components/      # Componentes reutilizáveis (UI)
-│   └── ui/          # Componentes básicos (Button, Input)
-├── constants/       # Constantes globais (Cores, Fontes)
-├── lib/             # Funções utilitárias e serviços de API
-├── hooks/           # Custom Hooks
-├── package.json
-└── README.md
-```
+## 🎨 Design UI/UX
 
-## 🤝 Contribuição
+- **Cor Primária:** `#8a2be2` (BlueViolet)
+- **Tipografia:** Pilha de fontes nativas do sistema para desempenho e visual ideal.
+- **Componentes:** Construídos do zero para garantir uma experiência leve e consistente em todas as plataformas.
 
-1.  Faça um Fork deste repositório
-2.  Crie sua feature branch: `git checkout -b minha-feature`
-3.  Commit suas alterações: `git commit -m 'feat: Minha nova feature'`
-4.  Push para a branch: `git push origin minha-feature`
-5.  Abra um Pull Request
+## 🚀 Começando (Getting Started)
 
-## 📄 Licença
+### Pré-requisitos
+- [Node.js](https://nodejs.org/) (v18+)
+- [npm](https://www.npmjs.com/) ou [yarn](https://yarnpkg.com/)
+- Aplicativo [Expo Go](https://expo.dev/go) no seu dispositivo móvel
 
-Este projeto está sob a licença MIT.
-Sinta-se livre para usar e modificar.
+### Instalação
+1. Clone o repositório
+2. Instale as dependências:
+   ```bash
+   npm install
+   ```
+
+### Executando o App
+- **Iniciar Servidor de Desenvolvimento:**
+  ```bash
+  npx expo start
+  ```
+- **Executar no Emulador Android:**
+  ```bash
+  npx expo run:android
+  ```
+- **Executar no Simulador iOS:**
+  ```bash
+  npx expo run:ios
+  ```
+- **Executar na Web:**
+  ```bash
+  npx expo start --web
+  ```
+
+## 📝 Scripts
+
+- `npm start`: Inicia o servidor de desenvolvimento do Expo.
+- `npm run android`: Executa o app em um dispositivo/emulador Android.
+- `npm run ios`: Executa o app em um dispositivo/simulador iOS.
+- `npm run web`: Abre o app em um navegador web.
+- `npm run lint`: Executa o ESLint para verificar problemas de qualidade de código.
